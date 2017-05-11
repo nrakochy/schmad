@@ -35,7 +35,7 @@
   (->> (build-entity-sch ent ident-map)
        (lazy-cat result)))
 
-(defn generate 
+(defn generate-schema 
   "Reduces on the build-datomic-schema func. Requires schema map to execute.
   Returns a datomic-transaction-able seq of datomic schema attrs.
   Takes a map with entity name as key and map of ident configuration values
