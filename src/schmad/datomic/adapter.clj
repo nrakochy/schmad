@@ -1,6 +1,22 @@
 (ns schmad.datomic.adapter
   (:require [datomic.api :as d :refer [tempid]]))
 
+(defn dat-types
+  {:string    "string"
+   :bool      "boolean"
+   :boolean   "boolean"
+   :keyword   "keyword"
+   :long      "long"
+   :bigint    "bigint"
+   :float     "float"
+   :double    "double"
+   :bigdec    "bigdec"
+   :ref       "ref"
+   :instant   "instant"
+   :uuid      "uuid"
+   :uri       "uri"
+   :byte      "byte"})
+ 
 (defn uniqueness-check
   "Assoc Datomic uniqueness if it exists"
   [result uniq-attr]
