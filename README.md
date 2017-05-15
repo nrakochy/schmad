@@ -2,14 +2,13 @@
 A schema adapter to convert a Clojure map to the desired schema implementation.
 
 ## Usage
-See `examples` for a sample schema to use. Note: there are keys in the example map by design. It is not limited to any one schema implementation
+See `examples` for a sample schema to use. Note: there are extra keys in the example map by design. It is not limited to any one schema implementation.
 
-#### Datomic
-Use `schmad.datomic.adapter/generate-schema` to generate a lazy, Datomic-transactable seq, and the doc string on said function articulates the requisite params.
-
-## To-do 
-* `clojure-spec`
-* `graphql` via `lacinia`
+To use: 
+* Require `[schmad.adapter]` 
+* `(get-schema :named-implementation data-map)` to generate a lazy seq with the desired data type. 
+  - E.g. `(get-schema :datomic m)`
+  - Currently renders for the following: `:datomic`, `:lacinia`, and `postgresql` 
 
 ## License
 
