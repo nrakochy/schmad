@@ -1,7 +1,7 @@
 (ns schmad.datomic.adapter
   (:require [datomic.api :as d :refer [tempid]]))
 
-(defn dat-types
+(def dat-types
   {:string    "string"
    :bool      "boolean"
    :boolean   "boolean"
@@ -16,6 +16,14 @@
    :uuid      "uuid"
    :uri       "uri"
    :byte      "byte"})
+
+(defmulti ->type class)
+
+(defmethod ->type java.lang.String [s]
+  (-> s keyword dat-types)) 
+
+(defmethod ->type :default [k]
+  (-> k dat-types)) 
  
 (defn uniqueness-check
   "Assoc Datomic uniqueness if it exists"
@@ -25,12 +33,13 @@
     result))
 
 (defn datomic-schema-attribute [ent [ident {:keys [type cardinality unique index doc fulltext is-component no-history]
-                                            :or   {index true doc "No docs provided" fulltext false unique nil is-component false no-history false}}]]
+                                            :or   {index true doc "No docs provided" fulltext false unique nil 
+                                                   cardinality "one" is-component false no-history false}}]]
   (let [ns-ident (keyword (name ent) (name ident))
         attr-map
         {:db/id                 (d/tempid :db.part/db)
          :db/ident              ns-ident
-         :db/valueType          (keyword "db.type" type)
+         :db/valueType          (keyword "db.type" (->type type))
          :db/cardinality        (keyword "db.cardinality" cardinality)
          :db/doc                doc
          :db/index              index
