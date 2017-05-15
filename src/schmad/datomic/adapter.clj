@@ -1,6 +1,8 @@
 (ns schmad.datomic.adapter
-  (:require [datomic.api :as d :refer [tempid]]))
-
+  (:require [clojure.spec.alpha :as s]
+            [datomic.api :as d :refer [tempid]]))
+      
+ 
 (def dat-types
   {:string    "string"
    :bool      "boolean"
@@ -60,6 +62,13 @@
   (->> (build-entity-sch ent ident-map)
        (lazy-cat result)))
 
+(s/def ::dat-record
+  (s/keys :req [::type ::cardinality]
+          :opt [::index ::doc ::fulltext ::unique ::is-component ::no-history]))
+
+(s/def ::datomic 
+  (s/map-of ::dat-record #(% true)))
+
 (defn generate-schema 
   "Reduces on the build-datomic-schema func. Requires schema map to execute.
   Returns a datomic-transaction-able seq of datomic schema attrs.
@@ -71,12 +80,15 @@
 
   Example -  
 
-  {:user    {:first_name  {:type 'string' :cardinality 'one'}
-             :last_name   {:type 'string' :cardinality 'one'}}
-   :company {:name        {:type 'string' :cardinality 'one' 
-                           :index 'true'  :doc 'Name of the company' 
-                           :fulltext true :is-componene false 
-                           :unique true   :no-history false}
-             :locations   {:type 'string' :cardinality 'many'}}}}
+  {::user    {::first_name  {::type ::string ::cardinality 'one'}
+             ::last_name   {::type ::string ::cardinality 'one'}}
+   ::company {::name        {::type ::string ::cardinality 'one' 
+                           ::index true  ::doc 'Name of the company' 
+                           ::fulltext true ::is-componene false 
+                           ::unique true   ::no-history false}
+             ::locations   {::type ::string ::cardinality 'many'}}}}
   "
-  [m] (reduce build-datomic-schema [] m))
+  [m] 
+    (if (s/valid? ::datomic m)
+        (reduce build-datomic-schema [] m)
+        (s/explain ::datomic m)))
