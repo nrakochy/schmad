@@ -19,17 +19,9 @@
   Schema
    (->schema [_] (datomic/generate-schema m)))
 
-(defn postgresql [m]
-  ;; TODO- ADD SPEC VALIDATION
-  (->schema (->Postgresql m)))
-
-(defn lacinia [m]
-  ;; TODO- ADD SPEC VALIDATION
-  (->schema (->Lacinia m)))
-
-(defn datomic [m]
-  ;; TODO- ADD SPEC VALIDATION
-  (->schema (->Datomic m)))
+(defn schema-constructor [k]
+ (fn [m]
+   (resolve (symbol (str "->" (name k)))) m))
 
 (defn get-schema [record-type m]
-   ((resolve (symbol (name record-type))) m))
+   ((schema-constructor record-type) m))
