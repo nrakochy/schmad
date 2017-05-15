@@ -8,7 +8,7 @@ To use:
 * Require `[schmad.adapter]` 
 * `(get-schema :named-implementation data-map)` to generate a lazy seq with the desired data type. 
   - E.g. `(get-schema :datomic m)`
-  - Currently renders for the following: `:datomic`, `:lacinia`, and `postgresql` 
+  - Currently renders for the following: `:datomic`, `:lacinia`, and `:postgresql` 
 
 ## License
 
