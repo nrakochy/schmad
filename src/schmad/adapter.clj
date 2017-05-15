@@ -1,6 +1,5 @@
 (ns schmad.adapter
-  (:require [clojure.string :refer [capitalize]]
-            [schmad.lacinia.adapter :as lacinia]
+  (:require [schmad.lacinia.adapter :as lacinia]
             [schmad.postgresql.adapter :as postgresql]
             [schmad.datomic.adapter :as datomic]))
 
