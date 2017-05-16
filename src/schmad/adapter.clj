@@ -5,21 +5,28 @@
 
 (defprotocol Schema
   "Generating type-specific schemas from a single generic map"
-   (->schema [m]))
+   (->schema [schema]))
 
-(defrecord Postgresql [m]
+(defrecord Postgresql [schema]
   Schema
-   (->schema [_] (postgresql/generate-schema m)))
+   (->schema [_] (postgresql/generate-schema schema)))
 
-(defrecord Lacinia [m]
+(defrecord Lacinia [schema]
   Schema
-   (->schema [_] (lacinia/generate-schema m)))
+   (->schema [_] (lacinia/generate-schema schema)))
 
-(defrecord Datomic [m]
+(defrecord Datomic [schema]
   Schema
-   (->schema [_] (datomic/generate-schema m)))
+   (->schema [_] (datomic/generate-schema schema)))
 
-(defn schema-constructor [k]
+(defrecord Default [schema]
+  Schema
+   (->schema [_] schema))
+
+(defn schema-constructor
+ "Converts given key to Clojure's OOTB record constructor (e.g. ->RecordName) 
+  which is generated with defrecord. Returns function" 
+  [k]
  (fn [m]
    (resolve (symbol (str "->" (name k)))) m))
 
