@@ -1,5 +1,6 @@
 (ns schmad.adapter
-  (:require [schmad.lacinia.adapter :as lacinia]
+ (:require  [clojure.string :as string :refer [capitalize]]
+            [schmad.lacinia.adapter :as lacinia]
             [schmad.postgresql.adapter :as postgresql]
             [schmad.datomic.adapter :as datomic]))
 
@@ -25,10 +26,9 @@
 
 (defn schema-constructor
  "Converts given key to Clojure's OOTB record constructor (e.g. ->RecordName) 
-  which is generated with defrecord. Returns function" 
+  which is generated with defrecord. Returns symbol"
   [k]
- (fn [m]
-   (resolve (symbol (str "->" (name k)))) m))
+  (resolve (symbol (str "->" (string/capitalize (name k))))))
 
 (defn get-schema [record-type m]
-   ((schema-constructor record-type) m))
+   (->schema ((schema-constructor record-type) m)))

@@ -1,6 +1,6 @@
 (ns schmad.postgresql.adapter 
   (:require [clojure.string :as string :refer [lower-case replace split join]]))
-            
+
 (declare convert-hyphen-to-underscore)
 
 (def ^:private POSTGRES "postgresql")
